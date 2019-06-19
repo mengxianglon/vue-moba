@@ -7,7 +7,8 @@
           <el-option
             v-for="item in parents"
             :key="item._id"
-            :label="item.name"
+            :label="item.
+            name"
             :value="item._id"
           ></el-option>
         </el-select>
@@ -17,6 +18,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" native-type="submit">保存</el-button>
+        <el-button type="danger" @click="$router.push('/categories/list')">返回列表</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -39,9 +41,9 @@ export default {
       //判断是否有id，有id就put代表修改，没有就是新增，post
       let res;
       if (this.id) {
-        const res = await this.$http.put(`categories/${this.id}`, this.model);
+        const res = await this.$http.put(`rest/categories/${this.id}`, this.model);
       } else {
-        const res = await this.$http.post("categories", this.model);
+        const res = await this.$http.post("rest/categories", this.model);
       }
       this.$router.push("/categories/list");
       this.$message({
@@ -50,11 +52,11 @@ export default {
       });
     },
     async fetch() {
-      const res = await this.$http.get(`categories/${this.id}`);
+      const res = await this.$http.get(`rest/categories/${this.id}`);
       this.model = res.data;
     },
     async fetchParents() {
-      const res = await this.$http.get(`categories`);
+      const res = await this.$http.get(`rest/categories`);
       this.parents = res.data;
     }
   },
