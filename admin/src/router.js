@@ -10,6 +10,9 @@ import HeroList from './views/HeroList.vue'
 import ItemEdit from './views/ItemEdit.vue'
 import ItemList from './views/ItemList.vue'
 
+import ArticleEdit from './views/ArticleEdit.vue'
+import ArticleList from './views/ArticleList.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -30,6 +33,11 @@ export default new Router({
         {path:'/items/create',component:ItemEdit},
         {path:'/items/edit/:id',component:ItemEdit,props:true},
         {path:'/items/list',component:ItemList},
+
+        {path:'/articles/create',component:ArticleEdit},
+        {path:'/articles/edit/:id',component:ArticleEdit,props:true},
+        {path:'/articles/list',component:ArticleList},
+
       ]
     },
     
