@@ -14,14 +14,23 @@
             </el-option>
            </el-select>
            </el-form-item> 
-           <el-form-item label="所属分类">
+           <el-form-item label="标题">
                <el-input v-model="model.title"></el-input>
+           </el-form-item>
+           <el-form-item label="详情">
+               <vue-editor v-model="model.body" useCustomImageHandler @imageAdded="handleImageAdded"></vue-editor>
+           </el-form-item>
+           <el-form-item>
+               <el-button type="primary" native-type="submit">保存</el-button>
+               <el-button type="danger" @click="$router.push('/articles/list')">返回列表</el-button>
            </el-form-item>
        </el-form>
     </div>
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor";
+
 export default {
     props: {
     id: {}
@@ -31,8 +40,59 @@ export default {
           model: {},
       categories: []
       }
-  }
+  },
+components:{
+    VueEditor
+},
+methods: {
+      async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+        var formData = new FormData();
+        formData.append("file", file);  //插入了一个名字为file对象
+         const res = await this.$http.post("upload",formData)
+         Editor.insertEmbed(cursorLocation, "image", res.data.url);
+         resetUploader();
+        // axios({
+        //   url: "https://fakeapi.yoursite.com/images",
 
+
+        //   method: "POST",
+        //   data: formData
+        // })
+        //   .then(result => {
+        //     let url = result.data.url; // Get url from response
+        //     Editor.insertEmbed(cursorLocation, "image", url);
+        //     resetUploader();
+        //   })
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
+      },
+      async save(){
+          let res;
+          if(this.id){
+              res=await this.$http.put(`rest/articles/${this.id}`, this.model)
+          }else{
+              res =await this.$http.post("rest/articles",this.model)
+          }
+          this.$router.push("/articles/list");
+          this.$message({
+              type:"success",
+              message:"保存成功"
+          }) 
+      },
+        async fetch(){
+          const res= await this.$http.get(`rest/articles/${this.id}`);
+           this.model = res.data;
+      },
+      async fetchCategories(){
+          const res = await this.$http.get(`rest/categories`);
+           this.categories = res.data;
+      }
+    },
+    created() {
+    this.fetchCategories();
+    this.id && this.fetch();
+  }
 }
 </script>
 
